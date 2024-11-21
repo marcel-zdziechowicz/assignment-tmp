@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zadanie 8</title>
+    <style>
+        .dark-theme {
+            background: #2b2a2a;
+        }
+
+        .grid {
+            position: fixed;
+            inset: 0px;
+            width: fit-content;
+            height: fit-content;
+            margin: auto;
+        }
+
+        .grid_table {
+            border: 2px solid black;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .grid_drawer {
+            border: 2px solid black;
+            width: 50px;
+            height: 50px;
+        }
+
+        .grid_drawer:hover {
+            border: 2px solid lightgreen;
+        }
+
+        .grid_drawer_white {
+            background: white;
+        }
+
+        .grid_drawer_black {
+            background: black;
+        }
+
+        .history {
+            right: 0px;
+            max-width: fit-content;
+            margin-left: auto;
+            color: white;
+            padding: 50px;
+        }
+
+        .current_position {
+            max-width: fit-content;
+            margin-inline: auto;
+            color: white;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="grid" id="grid" name="grid"></div>
+    <!-- <div class="history">
+        <p id="history" name="history"></p>
+    </div> -->
+    <div class="current_position">
+        <p id="current_position" name="current_position"></p>
+    </div>
+    <script>
+        let currentDrawerColor = 1;
+        let DrawerColors = ["grid_drawer_white", "grid_drawer_black"];
+        let drawerIds = [];
+        let drawers = [];
+        function GetColor() {
+            currentDrawerColor = 1 - currentDrawerColor;
+            return DrawerColors[currentDrawerColor];
+        }
+
+        const grid = document.getElementById('grid');
+        if (!grid) {
+            throw "Could not find 'grid' element";
+        }
+
+        const WIDTH = 8;
+        const HEIGHT = 8;
+
+        let grid_table = `<table class="grid_table" id="grid_table" name="grid_table">\n`;
+        for (let row = 0; row < HEIGHT; row++) {
+            grid_table += `<tr>\n`;
+            drawerIds.push([]);
+            for (let col = 0; col < WIDTH; col++) {
+                let id = `grid_drawer_${row}_${col}`;
+                drawerIds[row].push(id);
+                grid_table += `<td class="grid_drawer ${GetColor()} " id="${id}" name="${id}"></td>\n`;
+            }
+            grid_table += `</tr>\n`;
+            currentDrawerColor = 1 - currentDrawerColor;
+        }
+        grid_table += `</table>\n`;
+        grid.innerHTML = grid_table;
+
+        // const history = document.getElementById('history');
+        const current_position = document.getElementById('current_position');
+        // if (!history || !current_position) {
+        //     throw "History or current_position not found!";
+        // }
+
+        for (let row = 0; row < drawerIds.length; row++) {
+            drawers.push([]);
+            for (let col = 0; col < drawerIds[row].length; col++) {
+                drawers[row].push(document.getElementById(drawerIds[row][col]));
+                if (!drawers[row][col]) {
+                    throw `drawer[${row}][${col}] not found!`;
+                }
+                drawers[row][col].addEventListener("mouseover", () => {
+                    // history.innerText += `Row: ${row + 1} Col: ${col + 1}\n`;
+                    current_position.innerText = `Row: ${row + 1} Col: ${col + 1}`;
+                })
+            }
+        }
+    </script>
+</body>
+</html>
